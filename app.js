@@ -2,13 +2,13 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 
 const pupilsRoutes = require('./api/routes/pupils');
 const subjectsRoutes = require('./api/routes/subjects');
 const teachersRoutes = require('./api/routes/teachers');
-
-mongoose.connect('mongodb://127.0.0.1:27017/SchoolDispatch');
+const academicGradesRoutes = require('./api/routes/academicgrades');
+const schoolGradesRoutes = require('./api/routes/schoolgrades');
+const userRoutes = require('./api/routes/user');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -30,6 +30,10 @@ app.use((req, res, next) => {
 app.use('/pupils', pupilsRoutes);
 app.use('/subjects', subjectsRoutes);
 app.use('/teachers', teachersRoutes);
+app.use('/academicgrades', academicGradesRoutes);
+app.use('/schoolgrades', schoolGradesRoutes);
+app.use('/user', userRoutes);
+
 
 app.use((req, res, next) => {
     const err = new Error('Not found');
