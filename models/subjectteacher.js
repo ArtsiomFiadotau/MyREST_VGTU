@@ -3,19 +3,19 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class SubjectTaught extends Model {
+  class SubjectTeacher extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      SubjectTaught.belongsTo(models.Subject);
-      SubjectTaught.belongsTo(models.Teacher);
+      SubjectTeacher.belongsTo(models.Subject);
+      SubjectTeacher.belongsTo(models.Teacher);
       // define association here
     }
   }
-  SubjectTaught.init({
+  SubjectTeacher.init({
     subjectId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'SubjectTaught',
+    modelName: 'SubjectTeacher',
   });
-  return SubjectTaught;
+  return SubjectTeacher;
 };

@@ -1,12 +1,13 @@
 const models = require('../../models');
 models.sequelize.sync();
-async function subjectstudieds_add_subjectstudied(req, res, next) {
-    const subjectstudied = {
+
+async function subjectacademicgrades_add_subjectacademicgrade(req, res, next) {
+    const subjectacademicgrade = {
         gradeNumber: req.body.gradeNumber,
         subjectId: req.body.subjectId
         };
-        if (subjectstudied.gradeNumber && subjectstudied.subjectId) {
-    const SubjectStudied1 = await models.SubjectStudied.create(subjectstudied).then(result => {
+        if (subjectacademicgrade.gradeNumber && subjectacademicgrade.subjectId) {
+    const SubjectAcademicGrade1 = await models.SubjectAcademicGrade.create(subjectacademicgrade).then(result => {
         console.log(result);
         res.status(201).json(result);
 })
@@ -21,5 +22,5 @@ async function subjectstudieds_add_subjectstudied(req, res, next) {
 
 
 module.exports = {
-    subjectstudieds_add_subjectstudied
+    subjectacademicgrades_add_subjectacademicgrade
    }

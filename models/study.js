@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Study.hasMany(sequelize.define('SubjectStudied'));
+      Study.hasMany(sequelize.define('SubjectAcademicGrade'));
       Study.hasMany(sequelize.define('SchoolGrade'));
-      Study.hasMany(sequelize.define('SubjectTaught'));
+      Study.hasMany(sequelize.define('SubjectTeacher'));
       // define association here
     }
   }

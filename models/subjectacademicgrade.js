@@ -3,13 +3,13 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class SubjectStudied extends Model {
+  class SubjectAcademicGrade extends Model {
     static associate(models) {
        //SubjectStudied.belongsTo(models.Subject);
        //SubjectStudied.belongsTo(models.AcademicGrade);
     }
   }
-  SubjectStudied.init({
+  SubjectAcademicGrade.init({
     gradeNumber: {
       type: DataTypes.TINYINT,
       primaryKey: true,
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'SubjectStudied',
+    modelName: 'SubjectAcademicGrade',
   });
-  return SubjectStudied;
+  return SubjectAcademicGrade;
 };

@@ -8,6 +8,8 @@ const subjectsRoutes = require('./api/routes/subjects');
 const teachersRoutes = require('./api/routes/teachers');
 const academicGradesRoutes = require('./api/routes/academicgrades');
 const schoolGradesRoutes = require('./api/routes/schoolgrades');
+const subjectTeachersRoutes = require('./api/routes/subjectteachers');
+const subjectAcademicGradesRoutes = require('./api/routes/subjectacademicgrades');
 const userRoutes = require('./api/routes/user');
 
 //app.use(morgan('dev'));
@@ -31,6 +33,9 @@ app.use('/pupils', pupilsRoutes);
 app.use('/subjects', subjectsRoutes);
 app.use('/teachers', teachersRoutes);
 app.use('/academicgrades', academicGradesRoutes);
+app.use('/schoolgrades', schoolGradesRoutes);
+app.use('/subjectteachers', subjectTeachersRoutes);
+app.use('/subjectacademicgrades', subjectAcademicGradesRoutes);
 app.use('/schoolgrades', schoolGradesRoutes);
 app.use('/user', userRoutes);
 
