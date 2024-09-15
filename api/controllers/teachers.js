@@ -1,4 +1,5 @@
 const models = require('../../models');
+models.sequelize.sync();
 
 exports.teachers_get_all = (req, res, next) => {
     models.Teacher.findAll({

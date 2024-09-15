@@ -1,5 +1,6 @@
 const models = require('../../models');
-const mongoose = require('mongoose');
+models.sequelize.sync();
+//const mongoose = require('mongoose');
 
 exports.academicgrades_get_all = (req, res, next) => {
     models.AcademicGrade.findAll()

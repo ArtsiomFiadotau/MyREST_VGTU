@@ -1,15 +1,12 @@
 const models = require('../../models');
-const mongoose = require('mongoose');
+models.sequelize.sync();
+//const mongoose = require('mongoose');
 
-exports.pupils_get_all = (req, res, next) => {
-    models.Pupil.findAll({
-        attributes: {
-          include: [
-            {required: false,  
-            attributes: []}],
-          exclude: ['updatedAt', 'createdAt'],
-        },
-      })
+async function pupils_get_grade(req, res, next){
+    const gradeNumber = req.params.gradeNumber;
+    const gradeLetter = req.params.gradeLetter;
+    const SchoolGrade = await models.Pupil.findAll({where: {gradeNumber: gradeNumber, gradeLetter: gradeLetter}}, 
+      )
     .then(docs => {
        const response = {
         count: docs.length,
@@ -18,13 +15,9 @@ exports.pupils_get_all = (req, res, next) => {
                 firstName: doc.firstName,
                 lastName: doc.lastName,
                 surName: doc.surName,
-                birthDate: doc.birthDate,
-                gradeNumber: doc.gradeNumber,
-                gradeLetter: doc.gradeLetter,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/pupils/' + doc.pupilId
-                }
+                //birthDate: doc.birthDate,
+                //gradeNumber: doc.gradeNumber,
+                //gradeLetter: doc.gradeLetter,
             }
         })
        };
@@ -38,7 +31,7 @@ exports.pupils_get_all = (req, res, next) => {
     });
 }
 
-exports.pupils_add_pupil = (req, res, next) => {
+async function pupils_add_pupil(req, res, next){
     const pupil = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -47,7 +40,7 @@ exports.pupils_add_pupil = (req, res, next) => {
         gradeNumber: req.body.gradeNumber,
         gradeLetter: req.body.gradeLetter,
     };
-    models.Pupil.create(pupil).then(result => {
+    const newPupil = models.Pupil.create(pupil).then(result => {
         console.log(result);
         res.status(201).json({
             message: 'New pupil added succesfully!',
@@ -73,9 +66,9 @@ exports.pupils_add_pupil = (req, res, next) => {
     });
 }
 
-exports.pupils_get_single = (req, res, next) => {
+async function pupils_get_single(req, res, next){
     const id = req.params.pupilId;
-    models.Pupil.findByPk(id, {
+    const singlePupil = models.Pupil.findByPk(id, {
         attributes: {
           exclude: ['updatedAt', 'createdAt'],
         },
@@ -100,7 +93,7 @@ exports.pupils_get_single = (req, res, next) => {
     });
 }
 
-exports.pupils_modify_pupil = (req, res, next) => {
+async function pupils_modify_pupil(req, res, next){
     const id = req.params.pupilId;
     const updatedPupil = {
         firstName: req.body.firstName,
@@ -111,7 +104,7 @@ exports.pupils_modify_pupil = (req, res, next) => {
         gradeLetter: req.body.gradeLetter,
     };
     
-    models.Pupil.update(updatedPupil, {where: { pupilId: id }})
+    const updPupil = models.Pupil.update(updatedPupil, {where: { pupilId: id }})
     .then(result => {
         res.status(200).json({
             message: 'Pupil data updated!',
@@ -130,9 +123,9 @@ exports.pupils_modify_pupil = (req, res, next) => {
     });
 }
 
-exports.pupils_delete_pupil = (req, res, next) => {
+async function pupils_delete_pupil(req, res, next){
     const id = req.params.pupilId;
-    models.Pupil.destroy({where:{pupilId: id}})
+    const destroyPupil = models.Pupil.destroy({where:{pupilId: id}})
     .then(result => {
         res.status(200).json({
             message: 'Pupil deleted!',
@@ -149,4 +142,12 @@ exports.pupils_delete_pupil = (req, res, next) => {
             error: err
         });
     });
+}
+
+module.exports = {
+    pupils_get_grade,
+    pupils_add_pupil,
+    pupils_get_single,
+    pupils_modify_pupil,
+    pupils_delete_pupil
 }

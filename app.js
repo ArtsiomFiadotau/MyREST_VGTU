@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const morgan = require('morgan');
+//const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
 const pupilsRoutes = require('./api/routes/pupils');
@@ -10,7 +10,7 @@ const academicGradesRoutes = require('./api/routes/academicgrades');
 const schoolGradesRoutes = require('./api/routes/schoolgrades');
 const userRoutes = require('./api/routes/user');
 
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 

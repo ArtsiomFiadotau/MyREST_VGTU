@@ -1,19 +1,12 @@
 const models = require('../../models');
-const mongoose = require('mongoose');
+models.sequelize.sync();
 
-exports.schoolgrades_get_all = (req, res, next) => {
-    models.SchoolGrade.findAll()
-    .then(docs => {
-       const response = {
-        count: docs.length,
-        schoolgrades: docs.map(doc => {
-            return {
-                gradeNumber: doc.gradeNumber,
-                gradeLetter: doc.gradeLetter,
-            }
-        })
-       };
-        res.status(200).json(response);
+async function schoolgrades_get_all(req, res, next) {
+    const Grade = await models.SchoolGrade.findAll({
+        include:[models.Teacher]
+    })
+    .then(result => {
+        res.status(200).json(result);
     })
     .catch(err => {
         console.log(err);
@@ -23,13 +16,40 @@ exports.schoolgrades_get_all = (req, res, next) => {
     });
 }
 
-exports.schoolgrades_add_schoolgrade = (req, res, next) => {
+async function schoolgrades_get_single(req, res, next) {
+    const id1 = req.params.gradeNumber;
+    const id2 = req.params.gradeLetter;
+
+    const singleGrade = await models.SchoolGrade.findOne(
+        {
+            where: {
+              gradeNumber: id1,
+              gradeLetter: id2,
+            },
+            include:[models.Teacher]
+        })
+        .then(result => {
+            console.log("From database", result);
+            if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({message: 'No such SchoolGrade!'});
+        }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err});
+    });
+}
+
+async function schoolgrades_add_schoolgrade(req, res, next) {
     const schoolgrade = {
         gradeNumber: req.body.gradeNumber,
         gradeLetter: req.body.gradeLetter,
+        teacherId: req.body.teacherId
         };
-        if (schoolgrade.gradeNumber) {
-    models.SchoolGrade.create(schoolgrade).then(result => {
+        if (schoolgrade.gradeNumber && schoolgrade.gradeLetter) {
+    const newSchoolGrade = await models.SchoolGrade.create(schoolgrade).then(result => {
         console.log(result);
         res.status(201).json({
             message: 'New School Grade added succesfully!',
@@ -38,7 +58,7 @@ exports.schoolgrades_add_schoolgrade = (req, res, next) => {
                 gradeLetter: result.gradeLetter,
                 request: {
                     type: 'POST',
-                    url: 'http://localhost:3000/schoolgrades/' + result.gradeNumber + result.gradeLetter
+                    url: 'http://localhost:3000/schoolgrades/' + result.gradeNumber + '/' + result.gradeLetter
                 }
             }
     });
@@ -52,13 +72,41 @@ exports.schoolgrades_add_schoolgrade = (req, res, next) => {
 }
 }
 
-exports.schoolgrades_delete_schoolgrade = (req, res, next) => {
+async function schoolgrades_modify_schoolgrade(req, res, next) {
     const id1 = req.params.gradeNumber;
     const id2 = req.params.gradeLetter;
-    models.schoolGrade.destroy({where:{gradeNumber: id1, gradeLetter: id2}})
+    const updatedSchoolGrade = {
+        gradeNumber: req.body.gradeNumber,
+        gradeLetter: req.body.gradeLetter,
+        teacherId: req.body.teacherId
+    };
+    
+    const updSchoolGrade = await models.SchoolGrade.update(updatedSchoolGrade, {where: {gradeNumber: id1, gradeLetter: id2}})
     .then(result => {
         res.status(200).json({
-            message: 'schoolGrade deleted!',
+            message: 'SchoolGrade data updated!',
+            request: {
+                type: 'PATCH',
+                url: 'http://localhost:3000/schoolgrades/' + id1 + '/' + id2
+            }
+        });
+
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+}
+
+async function schoolgrades_delete_schoolgrade(req, res, next) {
+    const id1 = req.params.gradeNumber;
+    const id2 = req.params.gradeLetter;
+    const destrSchoolGrade = await models.SchoolGrade.destroy({where: {gradeNumber: id1, gradeLetter: id2}})
+    .then(result => {
+        res.status(200).json({
+            message: 'SchoolGrade deleted!',
             request: {
                 type: 'POST',
                 url: 'http://localhost:3000/schoolgrades/',
@@ -72,4 +120,12 @@ exports.schoolgrades_delete_schoolgrade = (req, res, next) => {
             error: err
         });
     });
+}
+
+module.exports = {
+    schoolgrades_get_all,
+    schoolgrades_get_single,
+    schoolgrades_add_schoolgrade,
+    schoolgrades_modify_schoolgrade,
+    schoolgrades_delete_schoolgrade
 }

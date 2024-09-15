@@ -25,10 +25,10 @@ module.exports = {
         type: Sequelize.DATE
       },
       gradeNumber: {
-        type: Sequelize.TINYINT
+        type: Sequelize.TINYINT,
       },
       gradeLetter: {
-        type: Sequelize.CHAR(1)
+        type: Sequelize.CHAR(1),
       },
       createdAt: {
         allowNull: false,
@@ -39,7 +39,19 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+    
+    await queryInterface.addConstraint('Pupils', {
+      fields: ['gradeNumber', 'gradeLetter'], // оба поля для составного внешнего ключа
+      type: 'foreign key',
+      references: {
+        table: 'SchoolGrades',
+        fields: ['gradeNumber', 'gradeLetter'], // ссылка на оба поля внешней таблицы
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
+    });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Pupils');
   }

@@ -5,7 +5,6 @@ module.exports = {
     await queryInterface.createTable('AcademicGrades', {
       gradeNumber: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
         type: Sequelize.TINYINT
       }

@@ -3,17 +3,17 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class SchoolGrade extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+ class SchoolGrade extends Model {
     static associate(models) {
-      SchoolGrade.belongsTo(models.Teacher);
-      // define association here
-    }
-  }
+      SchoolGrade.belongsTo(models.Teacher, {
+         foreignKey: 'teacherId'
+      });
+      SchoolGrade.belongsTo(models.AcademicGrade, {
+        foreignKey: 'gradeNumber'
+     });
+      SchoolGrade.hasMany(sequelize.define('Pupil')); 
+      }
+ }
   SchoolGrade.init({
     gradeNumber: {
       type: DataTypes.TINYINT,
@@ -23,10 +23,19 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.CHAR,
       primaryKey: true,
     },
-    teacherId: DataTypes.INTEGER
+    teacherId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'SchoolGrade',
+    timestamps: false,
   });
+  
+  /*SchoolGrade.associate = function(models) {
+    SchoolGrade.belongsTo(models.Teacher, {
+      foreignKey: 'teacherId',
+      onDelete: 'SET NULL'
+    });
+  };*/
+
   return SchoolGrade;
 };

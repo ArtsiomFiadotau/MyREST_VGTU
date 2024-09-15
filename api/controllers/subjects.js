@@ -1,8 +1,9 @@
 const models = require('../../models');
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
+models.sequelize.sync();
 
-exports.subjects_get_all = (req, res, next) => {
-    models.Subject.findAll({
+async function subjects_get_all(req, res, next){
+    const allSubjects = models.Subject.findAll({
         attributes: ['subjectId', 'subjectTitle'],
       })
     .then(docs => {
@@ -28,11 +29,11 @@ exports.subjects_get_all = (req, res, next) => {
     });
 }
 
-exports.subjects_add_subject = (req, res, next) => {
+async function subjects_add_subject(req, res, next){
     const subject = {
         subjectTitle: req.body.subjectTitle
     };
-    models.Subject
+    const newSubject = models.Subject
         .create(subject)
         .then(result => {
         console.log(result);
@@ -55,9 +56,9 @@ exports.subjects_add_subject = (req, res, next) => {
     });
 }
 
-exports.subjects_get_single = (req, res, next) => {
+async function subjects_get_single(req, res, next){
     const id = req.params.subjectId;
-    models.Subject.findByPk(subjectId, {
+    const singleSubject = models.Subject.findByPk(subjectId, {
         attributes: {
           exclude: ['updatedAt', 'createdAt'],
         },
@@ -82,13 +83,13 @@ exports.subjects_get_single = (req, res, next) => {
     });
 }
 
-exports.subjects_modify_subject = (req, res, next) => {
+async function subjects_modify_subject(req, res, next){
     const id = req.params.subjectId;
     const updatedSubject = {
         subjectTitle: req.body.subjectTitle
     };
     
-    models.Subject.update(updatedSubject, {where: { subjectId: id }})
+    const updSubject = models.Subject.update(updatedSubject, {where: { subjectId: id }})
     .then(result => {
         res.status(200).json({
             message: 'Subject data updated!',
@@ -107,9 +108,9 @@ exports.subjects_modify_subject = (req, res, next) => {
     });
 }
 
-exports.subjects_delete_subject = (req, res, next) => {
+async function subjects_delete_subject(req, res, next){
     const id = req.params.subjectId;
-    models.Subject.destroy({where:{subjectId: id}})
+    const destroySubject = models.Subject.destroy({where:{subjectId: id}})
     .then(result => {
         res.status(200).json({
             message: 'Subject deleted!',
@@ -126,4 +127,12 @@ exports.subjects_delete_subject = (req, res, next) => {
             error: err
         });
     });
+}
+
+module.exports = {
+    subjects_get_all,
+    subjects_add_subject,
+    subjects_get_single,
+    subjects_modify_subject,
+    subjects_delete_subject
 }
