@@ -1,5 +1,5 @@
+const validator = require('fastest-validator');
 const models = require('../../models');
-//const mongoose = require('mongoose');
 models.sequelize.sync();
 
 async function subjects_get_all(req, res, next){
@@ -33,6 +33,21 @@ async function subjects_add_subject(req, res, next){
     const subject = {
         subjectTitle: req.body.subjectTitle
     };
+
+    const schema = {
+        subjectTitle: {type:"string", optional: false, max: '50'},
+    }
+        
+    const v = new validator();
+    const validationResponse = v.validate(subject, schema);
+        
+        if(validationResponse !== true){
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: validationResponse
+            });
+        }
+
     const newSubject = models.Subject
         .create(subject)
         .then(result => {

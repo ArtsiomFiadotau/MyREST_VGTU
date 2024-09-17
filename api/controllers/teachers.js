@@ -1,11 +1,12 @@
+const validator = require('fastest-validator');
 const models = require('../../models');
 models.sequelize.sync();
 
-exports.teachers_get_all = (req, res, next) => {
-    models.Teacher.findAll({
+async function teachers_get_all(req, res, next){
+    const allTechers = models.Teacher.findAll({
         attributes: {
           include: [],
-          exclude: ['updatedAt', 'createdAt', 'SchoolGradeGradeNumber'],
+          exclude: ['updatedAt', 'createdAt'],
         },
       })
     .then(docs => {
@@ -33,13 +34,30 @@ exports.teachers_get_all = (req, res, next) => {
     });
 }
 
-exports.teachers_add_teacher = (req, res, next) => {
+async function teachers_add_teacher(req, res, next){
     const teacher = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         surName: req.body.surName,
     };
-    models.Teacher.create(teacher).then(result => {
+
+    const schema = {
+        firstName: {type:"string", optional: false, max: '30'},
+        lastName: {type:"string", optional: false, max: '30'},
+        surName: {type:"string", optional: false, max: '30'},
+    }
+        
+    const v = new validator();
+    const validationResponse = v.validate(teacher, schema);
+        
+        if(validationResponse !== true){
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: validationResponse
+            });
+        }
+
+    const newTeacher = models.Teacher.create(teacher).then(result => {
         console.log(result);
         res.status(201).json({
             message: 'New teacher added succesfully!',
@@ -62,9 +80,9 @@ exports.teachers_add_teacher = (req, res, next) => {
     });
 }
 
-exports.teachers_get_single = (req, res, next) => {
+async function teachers_get_single(req, res, next){
     const id = req.params.teacherId;
-    models.Teacher.findByPk(id, {
+    const singleTeacher = models.Teacher.findByPk(id, {
         attributes: {
           exclude: ['updatedAt', 'createdAt'],
         },
@@ -89,7 +107,7 @@ exports.teachers_get_single = (req, res, next) => {
     });
 }
     
-    exports.teachers_modify_teacher =(req, res, next) => {
+ async function teachers_modify_teacher(req, res, next){
         const id = req.params.teacherId;
         const updatedTeacher = {
             firstName: req.body.firstName,
@@ -97,7 +115,23 @@ exports.teachers_get_single = (req, res, next) => {
             surName: req.body.surName
 };
 
-        models.Teacher.update(updatedTeacher, {where: { teacherId: id }})
+const schema = {
+    firstName: {type:"string", optional: false, max: '30'},
+    lastName: {type:"string", optional: false, max: '30'},
+    surName: {type:"string", optional: false, max: '30'},
+}
+    
+        const v = new validator();
+        const validationResponse = v.validate(updatedTeacher, schema);
+    
+            if(validationResponse !== true){
+             return res.status(400).json({
+                 message: "Validation failed",
+                    errors: validationResponse
+                });
+         }
+
+        const updTeacher = models.Teacher.update(updatedTeacher, {where: { teacherId: id }})
         .then(result => {
             res.status(200).json({
                 message: 'Teacher data updated!',
@@ -116,9 +150,9 @@ exports.teachers_get_single = (req, res, next) => {
         });
     }
 
-    exports.teachers_delete_teacher = (req, res, next) => {
+async function teachers_delete_teacher(req, res, next){
         const id = req.params.teacherId;
-        models.Teacher.destroy({where:{teacherId: id}})
+        const delTeacher = models.Teacher.destroy({where:{teacherId: id}})
         .then(result => {
             res.status(200).json({
                 message: 'Teacher deleted!',
@@ -135,4 +169,12 @@ exports.teachers_get_single = (req, res, next) => {
                 error: err
             });
         });
+    }
+
+    module.exports = {
+        teachers_get_all,
+        teachers_add_teacher,
+        teachers_get_single,
+        teachers_modify_teacher,
+        teachers_delete_teacher
     }

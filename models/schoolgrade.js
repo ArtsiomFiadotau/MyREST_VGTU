@@ -30,12 +30,5 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
   });
   
-  /*SchoolGrade.associate = function(models) {
-    SchoolGrade.belongsTo(models.Teacher, {
-      foreignKey: 'teacherId',
-      onDelete: 'SET NULL'
-    });
-  };*/
-
   return SchoolGrade;
 };

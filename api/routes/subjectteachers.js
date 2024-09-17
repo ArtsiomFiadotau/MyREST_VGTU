@@ -8,4 +8,6 @@ const SubjectTeacherController = require('../controllers/subjectteachers');
 
 router.post('/', checkAuth, SubjectTeacherController.subjectteachers_add_subjectteacher);
 
+router.delete('/', checkAuth, SubjectTeacherController.subjectteachers_delete_subjectteacher);
+
 module.exports = router;

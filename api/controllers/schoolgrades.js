@@ -1,8 +1,9 @@
+const validator = require('fastest-validator');
 const models = require('../../models');
 models.sequelize.sync();
 
 async function schoolgrades_get_all(req, res, next) {
-    const Grade = await models.SchoolGrade.findAll({
+    const allGrades = await models.SchoolGrade.findAll({
         include:[models.Teacher]
     })
     .then(result => {
@@ -48,6 +49,23 @@ async function schoolgrades_add_schoolgrade(req, res, next) {
         gradeLetter: req.body.gradeLetter,
         teacherId: req.body.teacherId
         };
+
+        const schema = {
+            gradeNumber: {type:"number", optional: false},
+            gradeLetter: {type:"string", optional: false, max: '1'},
+            teacherId: {type:"number", optional: true},
+        }
+            
+        const v = new validator();
+        const validationResponse = v.validate(schoolgrade, schema);
+            
+            if(validationResponse !== true){
+                return res.status(400).json({
+                    message: "Validation failed",
+                    errors: validationResponse
+                });
+            }
+
         if (schoolgrade.gradeNumber && schoolgrade.gradeLetter) {
     const newSchoolGrade = await models.SchoolGrade.create(schoolgrade).then(result => {
         console.log(result);

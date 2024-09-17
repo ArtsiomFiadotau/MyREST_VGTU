@@ -1,6 +1,6 @@
+const validator = require('fastest-validator');
 const models = require('../../models');
 models.sequelize.sync();
-//const mongoose = require('mongoose');
 
 async function pupils_get_grade(req, res, next){
     const gradeNumber = req.params.gradeNumber;
@@ -15,9 +15,6 @@ async function pupils_get_grade(req, res, next){
                 firstName: doc.firstName,
                 lastName: doc.lastName,
                 surName: doc.surName,
-                //birthDate: doc.birthDate,
-                //gradeNumber: doc.gradeNumber,
-                //gradeLetter: doc.gradeLetter,
             }
         })
        };
@@ -40,6 +37,26 @@ async function pupils_add_pupil(req, res, next){
         gradeNumber: req.body.gradeNumber,
         gradeLetter: req.body.gradeLetter,
     };
+
+    const schema = {
+        firstName: {type:"string", optional: false, max: '30'},
+        lastName: {type:"string", optional: false, max: '30'},
+        surName: {type:"string", optional: false, max: '30'},
+        birthDate: {type:"date", optional: false, convert: true},
+        gradeNumber: {type:"number", optional: true},
+        gradeLetter: {type:"string", optional: true, max: '1'},
+    }
+        
+    const v = new validator();
+    const validationResponse = v.validate(pupil, schema);
+        
+        if(validationResponse !== true){
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: validationResponse
+            });
+        }
+
     const newPupil = models.Pupil.create(pupil).then(result => {
         console.log(result);
         res.status(201).json({
@@ -104,6 +121,25 @@ async function pupils_modify_pupil(req, res, next){
         gradeLetter: req.body.gradeLetter,
     };
     
+    const schema = {
+        firstName: {type:"string", optional: false, max: '30'},
+        lastName: {type:"string", optional: false, max: '30'},
+        surName: {type:"string", optional: false, max: '30'},
+        birthDate: {type:"date", optional: false, convert: true},
+        gradeNumber: {type:"number", optional: true},
+        gradeLetter: {type:"string", optional: true, max: '1'},
+    }
+        
+    const v = new validator();
+    const validationResponse = v.validate(updatedPupil, schema);
+        
+        if(validationResponse !== true){
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: validationResponse
+            });
+        }
+
     const updPupil = models.Pupil.update(updatedPupil, {where: { pupilId: id }})
     .then(result => {
         res.status(200).json({

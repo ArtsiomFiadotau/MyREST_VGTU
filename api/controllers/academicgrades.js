@@ -1,9 +1,9 @@
+const validator = require('fastest-validator');
 const models = require('../../models');
 models.sequelize.sync();
-//const mongoose = require('mongoose');
 
-exports.academicgrades_get_all = (req, res, next) => {
-    models.AcademicGrade.findAll()
+async function academicgrades_get_all(req, res, next){
+    const allacademicrades = models.AcademicGrade.findAll()
     .then(docs => {
        const response = {
         count: docs.length,
@@ -23,12 +23,25 @@ exports.academicgrades_get_all = (req, res, next) => {
     });
 }
 
-exports.academicgrades_add_academicgrade = (req, res, next) => {
+async function academicgrades_add_academicgrade(req, res, next){
     const academicgrade = {
         gradeNumber: req.body.gradeNumber,
         };
-        if (academicgrade.gradeNumber) {
-    models.AcademicGrade.create(academicgrade).then(result => {
+
+    const schema = {
+        gradeNumber: {type:"number", optional: false}}
+        
+    const v = new validator();
+    const validationResponse = v.validate(academicgrade, schema);
+        
+        if(validationResponse !== true){
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: validationResponse
+            });
+        }
+        
+    const newAcademicGrade = models.AcademicGrade.create(academicgrade).then(result => {
         console.log(result);
         res.status(201).json({
             message: 'New AcademicGrade added succesfully!',
@@ -47,12 +60,13 @@ exports.academicgrades_add_academicgrade = (req, res, next) => {
             error: err
         });
     });
-}
+
 }
 
-exports.academicgrades_delete_academicgrade = (req, res, next) => {
+
+async function academicgrades_delete_academicgrade(req, res, next){
     const id = req.params.gradeNumber;
-    models.AcademicGrade.destroy({where:{gradeNumber: id}})
+    const delAcademicGrade = models.AcademicGrade.destroy({where:{gradeNumber: id}})
     .then(result => {
         res.status(200).json({
             message: 'AcademicGrade deleted!',
@@ -69,4 +83,10 @@ exports.academicgrades_delete_academicgrade = (req, res, next) => {
             error: err
         });
     });
+}
+
+module.exports = {
+    academicgrades_get_all,
+    academicgrades_add_academicgrade,
+    academicgrades_delete_academicgrade
 }

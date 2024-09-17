@@ -4,11 +4,6 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Pupil extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       Pupil.belongsTo(models.SchoolGrade,
         {
@@ -20,10 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'gradeLetter'
       }
       );
-      /*Pupil.belongsTo(models.SchoolGrade, {
-        foreignKey: 'gradeLetter',
-        onDelete: 'SET NULL'
-      });*/
     }
   }
   Pupil.init({

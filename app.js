@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-//const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
 const pupilsRoutes = require('./api/routes/pupils');
@@ -9,10 +8,9 @@ const teachersRoutes = require('./api/routes/teachers');
 const academicGradesRoutes = require('./api/routes/academicgrades');
 const schoolGradesRoutes = require('./api/routes/schoolgrades');
 const subjectTeachersRoutes = require('./api/routes/subjectteachers');
-const subjectAcademicGradesRoutes = require('./api/routes/subjectacademicgrades');
+const academicGradeSubjectsRoutes = require('./api/routes/academicgradesubjects');
 const userRoutes = require('./api/routes/user');
 
-//app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -35,7 +33,7 @@ app.use('/teachers', teachersRoutes);
 app.use('/academicgrades', academicGradesRoutes);
 app.use('/schoolgrades', schoolGradesRoutes);
 app.use('/subjectteachers', subjectTeachersRoutes);
-app.use('/subjectacademicgrades', subjectAcademicGradesRoutes);
+app.use('/academicgradesubjects', academicGradeSubjectsRoutes);
 app.use('/schoolgrades', schoolGradesRoutes);
 app.use('/user', userRoutes);
 

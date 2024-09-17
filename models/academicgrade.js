@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       AcademicGrade.hasMany(sequelize.define('SchoolGrade'));
       AcademicGrade.belongsToMany(models.Subject, {
-        through: 'SubjectAcademicGrade',
+        through: 'AcademicGradeSubject',
         foreignKey: 'gradeNumber',
         otherKey: 'subjectId',
       });

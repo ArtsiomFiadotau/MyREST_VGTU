@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 
 const models = require('../../models');
 
-exports.user_signup = (req, res, next) => {
-    models.User.findOne({where:{email: req.body.email}})
+async function user_signup(req, res, next){
+    const userSignUp = models.User.findOne({where:{email: req.body.email}})
     .then(user => {
         if (user) {
             return res.status(409).json({
@@ -21,7 +21,7 @@ exports.user_signup = (req, res, next) => {
                         email: req.body.email,
                         password: hash
                     };
-                    models.User
+                    const createdUser = models.User
                     .create(user)
                     .then(result => {
                         console.log(result);
@@ -41,8 +41,8 @@ exports.user_signup = (req, res, next) => {
     })
 }
 
-exports.user_login = (req, res, next) => {
-    models.User.findOne({where:{email: req.body.email}})
+async function user_login(req, res, next){
+    const userLogin = models.User.findOne({where:{email: req.body.email}})
      .then(user => {
             if(user === null) {
                     return res.status(401).json({
@@ -84,8 +84,8 @@ exports.user_login = (req, res, next) => {
     })
 }
 
-exports.user_delete = (req, res, next) => {
-    models.User.deleteOne({id: req.params.userId})
+async function user_delete(req, res, next){
+    const delUser = models.User.deleteOne({id: req.params.userId})
         .then(result => {
             res.status(200).json({
                 message: 'User deleted'
@@ -97,4 +97,10 @@ exports.user_delete = (req, res, next) => {
                 error: err
             });
         });
+}
+
+module.exports = {
+    user_signup,
+    user_login,
+    user_delete
 }
