@@ -8,6 +8,6 @@ const StudyController = require('../controllers/studies');
 
 router.post('/', checkAuth, StudyController.studies_add_study);
 
-//router.delete('/', checkAuth, AcademicGradeSubjectController.academicgradesubjects_delete_academicgradesubject);
+router.delete('/', checkAuth, StudyController.studies_delete_study);
 
 module.exports = router;

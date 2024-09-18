@@ -24,15 +24,79 @@ async function studies_add_study(req, res, next) {
               errors: validationResponse
           });
       }
+      const check = models.AcademicGradeSubject.findOne({where:{gradeNumber: study.gradeNumber, subjectId: study.subjectId}})
+      .then(result => {
+    if (result === null) {
+        return res.status(500).json({
+            message: 'Cannot add subject to grade'
+        });
+    }
+    else {
+    const newSubject = models.Study
+    .create(study)
+    .then(result => {
+    console.log(result);
+    res.status(201).json(study);
+    })
+.catch(err => {
+    console.log(err)
+    res.status(500).json({
+        error: err
+        }); 
+    });
+    }     
+})
+.catch(err => {
+    console.log(err)
+    res.status(500).json({
+        error: err
+    });
+})    
+}
 
-    try {
-        const newStudy = await models.Study.create(study);
-        return res.status(201).json(study);
-      } catch (error) {
-        return res.status(500).json({ message: 'Error adding Study', error });
-      }
-    };
+    async function studies_delete_study(req, res, next){
+        const delStudy = {
+            gradeNumber: req.body.gradeNumber,
+            gradeLetter: req.body.gradeLetter,
+            subjectId: req.body.subjectId,
+            teacherId: req.body.teacherId}
+    
+        const schema = {
+            gradeNumber: {type:"number", optional: false},
+            gradeLetter: {type:"string", optional: false, max: '1'},
+            subjectId: {type:"number", optional: false},
+            teacherId: {type:"number", optional: false}}
+          
+      const v = new validator();
+      const validationResponse = v.validate(delStudy, schema);
+          
+          if(validationResponse !== true){
+              return res.status(400).json({
+                  message: "Validation failed",
+                  errors: validationResponse
+              });
+          }
+  
+        const destroyStudy = models.Study.destroy({where:{gradeNumber: delStudy.gradeNumber, gradeLetter: delStudy.gradeLetter, subjectId: delStudy.subjectId, teacherId: delStudy.teacherId,}})
+        .then(result => {
+            res.status(200).json({
+                message: 'Study deleted!',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/studies/',
+                    body: { title: 'String'}
+                }
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+    }
 
     module.exports = {
-        studies_add_study
+        studies_add_study,
+        studies_delete_study
     }
