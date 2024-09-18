@@ -5,16 +5,46 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Study extends Model {
     static associate(models) {
-      Study.hasMany(sequelize.define('AcademicGradeSubject'));
-      Study.hasMany(sequelize.define('SchoolGrade'));
-      Study.hasMany(sequelize.define('SubjectTeacher'));
+      
+      Study.belongsTo(models.SchoolGrade,
+        {
+        foreignKey: 'gradeNumber'
+      }
+      );
+      Study.belongsTo(models.SchoolGrade,
+        {
+        foreignKey: 'gradeLetter'
+      }
+      );
+      Study.belongsTo(models.SubjectTeacher,
+        {
+        foreignKey: 'subjectId'
+      }
+      );
+      Study.belongsTo(models.SubjectTeacher,
+        {
+        foreignKey: 'teacherId'
+      }
+      );
     }
   }
   Study.init({
-    gradeNumber: DataTypes.TINYINT,
-    gradeLetter: DataTypes.CHAR,
-    subjectId: DataTypes.INTEGER,
-    teacherId: DataTypes.INTEGER
+    gradeNumber: {
+      type: DataTypes.TINYINT,
+      primaryKey: true,
+    },
+    gradeLetter: {
+      type: DataTypes.CHAR,
+      primaryKey: true,
+    },
+    subjectId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
+    teacherId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
   }, {
     sequelize,
     modelName: 'Study',

@@ -5,8 +5,6 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class AcademicGradeSubject extends Model {
     static associate(models) {
-       AcademicGradeSubject.belongsTo(models.Subject);
-       AcademicGradeSubject.belongsTo(models.AcademicGrade);
     }
   }
   AcademicGradeSubject.init({

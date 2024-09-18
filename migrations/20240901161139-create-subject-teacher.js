@@ -34,6 +34,12 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+    await queryInterface.addConstraint('SubjectTeachers', {
+      fields: ['subjectId', 'teacherId'],  // поля для составного первичного ключа
+      type: 'unique',
+      name: 'unique_subject_teacher' // уникальное имя для индекса составного первичного ключа
+    });
+
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('SubjectTeachers');

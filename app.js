@@ -9,6 +9,7 @@ const academicGradesRoutes = require('./api/routes/academicgrades');
 const schoolGradesRoutes = require('./api/routes/schoolgrades');
 const subjectTeachersRoutes = require('./api/routes/subjectteachers');
 const academicGradeSubjectsRoutes = require('./api/routes/academicgradesubjects');
+const studiesRoutes = require('./api/routes/studies');
 const userRoutes = require('./api/routes/user');
 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -35,6 +36,7 @@ app.use('/schoolgrades', schoolGradesRoutes);
 app.use('/subjectteachers', subjectTeachersRoutes);
 app.use('/academicgradesubjects', academicGradeSubjectsRoutes);
 app.use('/schoolgrades', schoolGradesRoutes);
+app.use('/studies', studiesRoutes);
 app.use('/user', userRoutes);
 
 

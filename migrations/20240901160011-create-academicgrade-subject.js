@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.TINYINT,
         references: {
-          model: 'AcademicGrades', // Ссылка на таблицу Subject
+          model: 'AcademicGrades', // Ссылка на таблицу AcademicGrades
           key: 'gradeNumber'
         },
         onUpdate: 'CASCADE',
