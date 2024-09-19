@@ -2,6 +2,30 @@ const validator = require('fastest-validator');
 const models = require('../../models');
 models.sequelize.sync();
 
+async function studies_get_singleschoolgrade(req, res, next){
+    const gradeNumber = req.params.gradeNumber;
+    const gradeLetter = req.params.gradeLetter;
+    const SingleGrade = await models.Study.findAll({where: {gradeNumber: gradeNumber, gradeLetter: gradeLetter}}, 
+      )
+    .then(docs => {
+       const response = {
+            subjects: docs.map(doc => {
+            return {
+                subjectId: doc.subjectId,
+                teacherId: doc.teacherId 
+            }
+        })
+       };
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        })
+    });
+  }
+
 async function studies_add_study(req, res, next) {
     const study = {
       gradeNumber: req.body.gradeNumber,
@@ -97,6 +121,7 @@ async function studies_add_study(req, res, next) {
     }
 
     module.exports = {
+        studies_get_singleschoolgrade,
         studies_add_study,
         studies_delete_study
     }

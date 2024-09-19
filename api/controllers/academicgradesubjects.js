@@ -2,6 +2,50 @@ const validator = require('fastest-validator');
 const models = require('../../models');
 models.sequelize.sync();
 
+async function academicgradesubjects_get_singlegrade(req, res, next){
+  const gradeNumber = req.params.gradeNumber;
+  const SingleGrade = await models.AcademicGradeSubject.findAll({where: {gradeNumber: gradeNumber}}, 
+    )
+  .then(docs => {
+     const response = {
+          subjects: docs.map(doc => {
+          return {
+              subjectId: doc.subjectId, 
+          }
+      })
+     };
+      res.status(200).json(response);
+  })
+  .catch(err => {
+      console.log(err);
+      res.status(500).json({
+          error: err
+      })
+  });
+}
+
+async function academicgradesubjects_get_singlesubject(req, res, next){
+  const subjectId = req.params.subjectId;
+  const SingleSubject = await models.AcademicGradeSubject.findAll({where: {subjectId: subjectId}}, 
+    )
+  .then(docs => {
+     const response = {
+          grades: docs.map(doc => {
+          return {
+            gradeNumber: doc.gradeNumber, 
+          }
+      })
+     };
+      res.status(200).json(response);
+  })
+  .catch(err => {
+      console.log(err);
+      res.status(500).json({
+          error: err
+      })
+  });
+}
+
 async function academicgradesubjects_add_academicgradesubject(req, res, next) {
     const academicGradeSubject = {
       gradeNumber: req.body.gradeNumber,
@@ -68,6 +112,8 @@ async function academicgradesubjects_add_academicgradesubject(req, res, next) {
   }
 
 module.exports = {
+  academicgradesubjects_get_singlegrade,
+  academicgradesubjects_get_singlesubject,
   academicgradesubjects_add_academicgradesubject,
   academicgradesubjects_delete_academicgradesubject
    }

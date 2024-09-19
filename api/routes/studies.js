@@ -4,7 +4,7 @@ const checkAuth = require('../middleware/check-auth');
 
 const StudyController = require('../controllers/studies');
 
-//router.get('/', AcademicGradeSubjectController.academicgradesubjects_get_all);
+router.get('/schoolgrade/:gradeNumber/:gradeLetter', StudyController.studies_get_singleschoolgrade);
 
 router.post('/', checkAuth, StudyController.studies_add_study);
 

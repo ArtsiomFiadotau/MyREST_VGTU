@@ -88,7 +88,6 @@ async function teachers_get_single(req, res, next){
         },
       })
         .then(doc => {
-            console.log("From database", doc);
             if (doc) {
             res.status(200).json({
                 teacher: doc,

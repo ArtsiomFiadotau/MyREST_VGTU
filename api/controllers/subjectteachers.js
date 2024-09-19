@@ -2,6 +2,50 @@ const validator = require('fastest-validator');
 const models = require('../../models');
 models.sequelize.sync();
 
+async function subjectteachers_get_singleteacher(req, res, next){
+    const teacherId = req.params.teacherId;
+    const SingleGrade = await models.SubjectTeacher.findAll({where: {teacherId: teacherId}}, 
+      )
+    .then(docs => {
+       const response = {
+            subjects: docs.map(doc => {
+            return {
+                subjectId: doc.subjectId, 
+            }
+        })
+       };
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        })
+    });
+  }
+
+  async function subjectteachers_get_singlesubject(req, res, next){
+    const subjectId = req.params.subjectId;
+    const SingleGrade = await models.SubjectTeacher.findAll({where: {subjectId: subjectId}}, 
+      )
+    .then(docs => {
+       const response = {
+            teachers: docs.map(doc => {
+            return {
+                teacherId: doc.teacherId, 
+            }
+        })
+       };
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        })
+    });
+  }
+
 async function subjectteachers_add_subjectteacher(req, res, next) {
     const subjectteacher = {
       teacherId: req.body.teacherId,
@@ -69,6 +113,8 @@ async function subjectteachers_add_subjectteacher(req, res, next) {
   }
 
 module.exports = {
+    subjectteachers_get_singleteacher,
+    subjectteachers_get_singlesubject,
     subjectteachers_add_subjectteacher,
     subjectteachers_delete_subjectteacher
    }
