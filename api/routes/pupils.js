@@ -4,6 +4,8 @@ const checkAuth = require('../middleware/check-auth');
 
 const PupilController = require('../controllers/pupils');
 
+router.get('/', PupilController.pupils_get_all);
+
 router.get('/grade/:gradeNumber/:gradeLetter', PupilController.pupils_get_grade);
 
 router.post('/', checkAuth, PupilController.pupils_add_pupil);

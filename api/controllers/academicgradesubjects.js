@@ -4,7 +4,7 @@ models.sequelize.sync();
 
 async function academicgradesubjects_get_singlegrade(req, res, next){
   const gradeNumber = req.params.gradeNumber;
-  const SingleGrade = await models.AcademicGradeSubject.findAll({where: {gradeNumber: gradeNumber}}, 
+  const SingleGrade = await models.AcademicGradeSubject.findAll({where: {gradeNumber: gradeNumber}}
     )
   .then(docs => {
      const response = {

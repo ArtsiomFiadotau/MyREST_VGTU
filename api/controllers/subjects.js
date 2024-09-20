@@ -73,23 +73,22 @@ async function subjects_add_subject(req, res, next){
 
 async function subjects_get_single(req, res, next){
     const id = req.params.subjectId;
-    const singleSubject = models.Subject.findByPk(subjectId, {
+    const singleSubject = models.Subject.findByPk(id, {
         attributes: {
           exclude: ['updatedAt', 'createdAt'],
         },
       })
-        .then(sub => {
-            console.log("From database", sub);
-            if (sub) {
+        .then(doc => {
+            if (doc) {
             res.status(200).json({
-                subject: sub,
+                subject: doc,
                 request: {
                     type: 'GET',
                     url: 'http://localhost:3000/subjects'
                 }
             });
         } else {
-            res.status(404).json({message: 'No subject with such id found'});
+            res.status(404).json({message: 'No valid data for id'});
         }
         })
         .catch(err => {

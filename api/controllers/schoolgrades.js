@@ -99,6 +99,22 @@ async function schoolgrades_modify_schoolgrade(req, res, next) {
         teacherId: req.body.teacherId
     };
     
+    const schema = {
+        gradeNumber: {type:"number", optional: true},
+        gradeLetter: {type:"string", optional: true, max: '1'},
+        teacherId: {type:"number", optional: true},
+    }
+        
+    const v = new validator();
+    const validationResponse = v.validate(updatedSchoolGrade, schema);
+        
+        if(validationResponse !== true){
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: validationResponse
+            });
+        }
+
     const updSchoolGrade = await models.SchoolGrade.update(updatedSchoolGrade, {where: {gradeNumber: id1, gradeLetter: id2}})
     .then(result => {
         res.status(200).json({

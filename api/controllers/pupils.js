@@ -2,6 +2,38 @@ const validator = require('fastest-validator');
 const models = require('../../models');
 models.sequelize.sync();
 
+async function pupils_get_all(req, res, next){
+    const allPupils = models.Pupil.findAll({
+        attributes: {
+          include: [],
+          exclude: ['updatedAt', 'createdAt'],
+        },
+      })
+    .then(docs => {
+       const response = {
+        count: docs.length,
+        pupils: docs.map(doc => {
+            return {
+                firstName: doc.firstName,
+                lastName: doc.lastName,
+                surName: doc.surName,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/pupils/' + doc.pupilId
+                }
+            }
+        })
+       };
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        })
+    });
+}
+
 async function pupils_get_grade(req, res, next){
     const gradeNumber = req.params.gradeNumber;
     const gradeLetter = req.params.gradeLetter;
@@ -122,10 +154,10 @@ async function pupils_modify_pupil(req, res, next){
     };
     
     const schema = {
-        firstName: {type:"string", optional: false, max: '30'},
-        lastName: {type:"string", optional: false, max: '30'},
-        surName: {type:"string", optional: false, max: '30'},
-        birthDate: {type:"date", optional: false, convert: true},
+        firstName: {type:"string", optional: true, max: '30'},
+        lastName: {type:"string", optional: true, max: '30'},
+        surName: {type:"string", optional: true, max: '30'},
+        birthDate: {type:"date", optional: true, convert: true},
         gradeNumber: {type:"number", optional: true},
         gradeLetter: {type:"string", optional: true, max: '1'},
     }
@@ -181,6 +213,7 @@ async function pupils_delete_pupil(req, res, next){
 }
 
 module.exports = {
+    pupils_get_all,
     pupils_get_grade,
     pupils_add_pupil,
     pupils_get_single,
